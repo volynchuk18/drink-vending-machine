@@ -53,12 +53,12 @@ const drinkVendingMachine = {
 
       const startPouringDrink = () => {
         return new Promise(resolve => {
-          setTimeout(() => {
+          setTimeout(async () => {
             commit('setPouringDrink', true);
             commit('setPreparingPourDrink', false);
             machineSoundAudio.pause();
             machineSoundAudio.currentTime = 0;
-            waterSoundAudio.play();
+            await waterSoundAudio.play();
             resolve()
           }, state.drinkPourDelay);
         });
