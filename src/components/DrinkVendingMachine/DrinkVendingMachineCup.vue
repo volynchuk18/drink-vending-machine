@@ -1,11 +1,11 @@
 <template>
   <div @click="cupClickHandler" class="drink-vending-machine-cup">
     <div class="cup">
-      <div
-        ref="cup-fill"
-        class="cup-fill"
-      >
-      </div>
+    </div>
+    <div
+      ref="cup-fill"
+      class="cup-fill"
+    >
     </div>
   </div>
 </template>
@@ -57,16 +57,15 @@
 
 <style scoped lang="scss">
   .drink-vending-machine-cup {
+    position: relative;
     width: 150px;
     height: 150px;
     transition: 0.5s;
-    right: 0;
 
     .cup {
-      position: relative;
       width: 100%;
       height: 100%;
-      background: rgba(176, 176, 176, 0.3);
+      background: rgba(208, 208, 208, 0.8);
       clip-path: polygon(10% 0%, 90% 0, 75% 100%, 25% 100%);
 
       &-fill {
@@ -74,6 +73,7 @@
         height: 0;
         position: absolute;
         bottom: 0;
+        z-index: -1;
       }
     }
   }
