@@ -39,7 +39,7 @@ const drinkVendingMachine = {
   },
 
   actions: {
-    drinkSelect: ({state, commit}, drink) => {
+    drinkSelect: async ({state, commit}, drink) => {
       if (state.coins < drink.price) {
         return
       }
@@ -49,20 +49,35 @@ const drinkVendingMachine = {
       commit('coinsReduce', drink.price);
       commit('setActiveDrink', drink);
       commit('setPreparingPourDrink', true);
-      machineSoundAudio.play();
-      setTimeout(() => {
-        commit('setPouringDrink', true);
-        commit('setPreparingPourDrink', false);
-        machineSoundAudio.pause();
-        machineSoundAudio.currentTime = 0;
-        waterSoundAudio.play();
-        setTimeout(() => {
-          commit('setPouringDrink', false);
-          commit('setCupFill', true);
-          waterSoundAudio.pause();
-          waterSoundAudio.currentTime = 0;
-        }, state.activeDrink.drinkPourDuration + state.drinkResidualMotion)
-      }, state.drinkPourDelay)
+      await machineSoundAudio.play();
+
+      const startPouringDrink = () => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            commit('setPouringDrink', true);
+            commit('setPreparingPourDrink', false);
+            machineSoundAudio.pause();
+            machineSoundAudio.currentTime = 0;
+            waterSoundAudio.play();
+            resolve()
+          }, state.drinkPourDelay);
+        });
+      };
+
+      const stopPouringDrink = () => {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            commit('setPouringDrink', false);
+            commit('setCupFill', true);
+            waterSoundAudio.pause();
+            waterSoundAudio.currentTime = 0;
+            resolve()
+          }, state.activeDrink.drinkPourDuration + state.drinkResidualMotion);
+        });
+      };
+
+      await startPouringDrink();
+      await stopPouringDrink();
     }
   },
 
@@ -81,7 +96,7 @@ const drinkVendingMachine = {
     },
     setActiveDrink: (state, drink) => {
       state.activeDrink = drink
-    },
+    }
   },
 
   getters: {
